@@ -1,0 +1,157 @@
+/* ═══════════════════════════════════════════════
+   GAIARB – equipe.css (Professional Redesign)
+   ═══════════════════════════════════════════════ */
+
+/* ── INTRO ──────────────────────────────────────── */
+.equipe-intro {
+    background: var(--bg);
+    padding: 80px 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.equipe-intro h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.equipe-intro h2 span {
+    color: var(--primary);
+}
+
+.equipe-intro p {
+    font-size: 16px;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+/* ── TEAM GRID ──────────────────────────────────── */
+.team-section {
+    padding: 100px 0;
+    background: var(--white);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.team-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 30px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 45px -10px rgba(99, 102, 241, 0.1);
+}
+
+.team-avatar-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.team-avatar-wrap.bg-1 { background: var(--primary); color: var(--white); }
+.team-avatar-wrap.bg-2 { background: var(--secondary); color: var(--white); }
+.team-avatar-wrap.bg-3 { background: var(--orange); color: var(--white); }
+.team-avatar-wrap.bg-4 { background: var(--blue); color: var(--white); }
+.team-avatar-wrap.bg-5 { background: var(--red); color: var(--white); }
+.team-avatar-wrap.bg-6 { background: var(--purple); color: var(--white); }
+
+.avatar-initials {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.team-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.member-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: rgba(79, 70, 229, 0.06);
+    padding: 6px 14px;
+    border-radius: 50px;
+    margin-bottom: 16px;
+}
+
+.team-card:nth-child(even) .member-badge {
+    color: var(--secondary);
+    background: rgba(13, 148, 136, 0.06);
+}
+
+.member-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.35;
+}
+
+.member-bio {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ── RESPONSIVE ────────────────────────────────── */
+@media screen and (max-width: 992px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .equipe-intro {
+        padding: 60px 0;
+    }
+    
+    .equipe-intro h2 {
+        font-size: 30px;
+    }
+    
+    .team-section {
+        padding: 60px 0;
+    }
+    
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .team-card {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+}
