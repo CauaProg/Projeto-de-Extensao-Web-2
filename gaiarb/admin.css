@@ -1,26 +1,25 @@
 /* ═══════════════════════════════════════════════
-   GAIARB – admin.css
+   GAIARB – admin.css (Organic NGO Redesign)
    ═══════════════════════════════════════════════ */
 
 /* ── CONFIGURAÇÕES GLOBAIS ──────────────────────── */
 :root {
-    --bg-dark: #0a0518;
-    --bg-card: rgba(15, 23, 42, 0.65);
-    --bg-hover: rgba(79, 70, 229, 0.15);
-    --text-main: #f3f4f6;
-    --text-muted: #9ca3af;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --primary: #8b5cf6;
-    --primary-glow: rgba(139, 92, 246, 0.3);
-    --secondary: #10b981;
-    --accent: #f59e0b;
-    --danger: #ef4444;
+    --bg-dark: #faf8f4; /* Warm sand light background */
+    --bg-card: #ffffff; /* Clean white card base */
+    --bg-hover: #f1f5f3; /* Soft warm green highlight */
+    --text-main: #19201c; /* Deep warm forest charcoal */
+    --text-muted: #56615b; /* Muted olive slate */
+    --border-color: #e0ddd5; /* Warm soft border */
+    --primary: #1d3d31; /* Deep forest green */
+    --secondary: #be5338; /* Terracotta / Rust */
+    --accent: #d9a74a; /* Warm gold */
+    --danger: #be5338;
 }
 
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
-    font-family: 'Outfit', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -34,15 +33,14 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #0d091a;
-    backdrop-filter: blur(12px);
+    background: #faf8f4;
     z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.3s ease;
 }
 
 .login-overlay.visivel {
@@ -53,31 +51,23 @@ body {
 .login-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(79, 70, 229, 0.15);
-    border-radius: 20px;
     padding: 40px;
     width: 100%;
     max-width: 420px;
     text-align: center;
-    transform: translateY(20px);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateY(10px);
+    transition: transform 0.3s ease;
 }
 
 .login-overlay.visivel .login-card {
     transform: translateY(0);
 }
 
-.login-logo-icon {
-    font-size: 50px;
-    display: inline-block;
-    margin-bottom: 15px;
-    animation: pulseIcon 2s infinite ease-in-out;
-}
-
 .login-card h2 {
-    font-weight: 800;
+    font-family: 'Lora', serif;
+    font-weight: 700;
     margin: 0 0 8px 0;
-    color: white;
+    color: var(--text-main);
 }
 
 .login-card p {
@@ -93,30 +83,30 @@ body {
 
 .login-form label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     margin-bottom: 6px;
-    color: var(--text-muted);
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .login-form input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: #fdfdfb;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
     padding: 12px 16px;
-    color: white;
+    color: var(--text-main);
     font-size: 14px;
     font-family: inherit;
     box-sizing: border-box;
-    transition: all 0.3s ease;
+    outline: none;
+    transition: all 0.2s ease;
 }
 
 .login-form input:focus {
-    outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 10px var(--primary-glow);
-    background: rgba(255, 255, 255, 0.08);
+    background: white;
 }
 
 .error-mensagem {
@@ -125,6 +115,7 @@ body {
     margin-bottom: 15px;
     text-align: left;
     display: none;
+    font-weight: 700;
 }
 
 .error-mensagem.visivel {
@@ -134,24 +125,19 @@ body {
 .btn-login {
     width: 100%;
     background: var(--primary);
-    border: none;
-    border-radius: 10px;
+    border: 1px solid var(--primary);
     padding: 14px;
     color: white;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     margin-top: 10px;
 }
 
 .btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px var(--primary-glow);
-}
-
-.btn-login:active {
-    transform: translateY(0);
+    background: var(--secondary);
+    border-color: var(--secondary);
 }
 
 /* ── LAYOUT CONTAINER ───────────────────────────── */
@@ -163,7 +149,7 @@ body {
 /* ── SIDEBAR ────────────────────────────────────── */
 .admin-sidebar {
     width: 260px;
-    background: rgba(13, 8, 28, 0.85);
+    background: #141c18; /* Deep dark charcoal-green sidebar */
     border-right: 1px solid var(--border-color);
     padding: 30px 20px;
     display: flex;
@@ -179,7 +165,8 @@ body {
 }
 
 .sidebar-header span {
-    font-weight: 800;
+    font-family: 'Lora', serif;
+    font-weight: 700;
     font-size: 18px;
     color: white;
 }
@@ -194,43 +181,42 @@ body {
 .menu-btn {
     background: transparent;
     border: none;
-    color: var(--text-muted);
+    color: #a5aea9;
     padding: 14px 16px;
-    border-radius: 12px;
     text-align: left;
     font-family: inherit;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .menu-btn:hover {
-    background: var(--bg-hover);
-    color: var(--primary);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--accent);
 }
 
 .menu-btn.ativo {
     background: var(--primary);
     color: white;
+    border: 1px solid var(--primary);
 }
 
 .menu-btn.logout {
     margin-top: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .menu-btn.logout:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--danger);
+    background: #be5338;
+    color: white;
+    border-color: #be5338;
 }
 
 .sidebar-footer {
     padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    color: var(--text-muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #76817b;
     font-size: 11px;
     line-height: 1.5;
 }
@@ -251,8 +237,9 @@ body {
 }
 
 .admin-header h1 {
+    font-family: 'Lora', serif;
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 700;
     margin: 0 0 6px 0;
 }
 
@@ -263,10 +250,9 @@ body {
 }
 
 .header-status {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--white);
     border: 1px solid var(--border-color);
     padding: 10px 18px;
-    border-radius: 50px;
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -279,7 +265,6 @@ body {
     height: 8px;
     background-color: var(--secondary);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--secondary);
 }
 
 /* ── METRICS GRID ───────────────────────────────── */
@@ -294,39 +279,31 @@ body {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     padding: 24px;
-    border-radius: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
 .metric-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    background-color: var(--primary-light);
 }
 
 .metric-card h3 {
     margin: 0 0 8px 0;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .metric-number {
+    font-family: 'Lora', serif;
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 700;
+    color: var(--primary);
 }
-
-.metric-icon {
-    font-size: 32px;
-    opacity: 0.8;
-}
-
-.card-purple:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.15); }
-.card-green:hover { border-color: var(--secondary); box-shadow: 0 0 20px rgba(13, 148, 136, 0.15); }
-.card-orange:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(245, 158, 11, 0.15); }
-.card-pink:hover { border-color: #ec4899; box-shadow: 0 0 20px rgba(236, 72, 153, 0.15); }
 
 /* ── SECTIONS & PANELS ──────────────────────────── */
 .admin-section {
@@ -335,26 +312,25 @@ body {
 
 .admin-section.active {
     display: block;
-    animation: fadeIn 0.4s ease forwards;
 }
 
 .panel {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
     padding: 30px;
     box-sizing: border-box;
 }
 
 .panel h2 {
+    font-family: 'Lora', serif;
     margin: 0 0 20px 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
 }
 
 .dashboard-panels {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.8fr 1.2fr;
     gap: 20px;
 }
 
@@ -377,23 +353,17 @@ body {
 }
 
 .busca-wrap input, .busca-wrap select {
-    background: rgba(255, 255, 255, 0.05);
+    background: #fdfdfb;
     border: 1px solid var(--border-color);
-    color: white;
+    color: var(--text-main);
     padding: 10px 16px;
-    border-radius: 8px;
     font-family: inherit;
     font-size: 13px;
-    transition: all 0.3s ease;
+    outline: none;
 }
 
 .busca-wrap input:focus, .busca-wrap select:focus {
-    outline: none;
     border-color: var(--primary);
-}
-
-.busca-wrap select option {
-    background: var(--bg-dark);
 }
 
 /* ── TABLES ─────────────────────────────────────── */
@@ -413,7 +383,9 @@ body {
     padding: 14px 18px;
     border-bottom: 2px solid var(--border-color);
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .admin-tabela td {
@@ -424,20 +396,20 @@ body {
 }
 
 .admin-tabela tbody tr {
-    transition: background 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 .admin-tabela tbody tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--primary-light);
 }
 
 .cargo-tag {
-    background: var(--bg-hover);
+    background: var(--primary-light);
     color: var(--primary);
     padding: 4px 10px;
-    border-radius: 50px;
     font-size: 11px;
     font-weight: 700;
+    border: 1px solid var(--border-color);
 }
 
 .msg-box {
@@ -451,19 +423,21 @@ body {
 
 .badge-status {
     padding: 4px 10px;
-    border-radius: 50px;
     font-size: 11px;
     font-weight: 700;
+    border: 1px solid transparent;
 }
 
 .status-pendente {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--accent);
+    background: #fdf5f2;
+    color: var(--secondary);
+    border-color: #f3d4ce;
 }
 
 .status-sucesso {
-    background: rgba(13, 148, 136, 0.15);
-    color: var(--secondary);
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--border-color);
 }
 
 .text-center {
@@ -495,20 +469,19 @@ body {
 
 .dist-value {
     color: var(--primary);
+    font-weight: 700;
 }
 
 .dist-bar-bg {
     width: 100%;
     height: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50px;
+    background: #f1ede5;
     overflow: hidden;
 }
 
 .dist-bar {
     height: 100%;
     background: var(--primary);
-    border-radius: 50px;
     transition: width 0.8s ease;
 }
 
@@ -518,17 +491,6 @@ body {
     color: var(--text-muted);
     font-size: 13px;
     font-style: italic;
-}
-
-/* ── ANIMATIONS ─────────────────────────────────── */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulseIcon {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.4)); }
 }
 
 /* ── RESPONSIVE DESIGN ──────────────────────────── */
@@ -560,4 +522,38 @@ body {
         align-items: flex-start;
         gap: 15px;
     }
+}
+
+/* Botões de Ações de Voluntários */
+.btn-acao {
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.btn-aprovar {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-aprovar:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-recusar {
+    background: #fdf5f2;
+    color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.btn-recusar:hover {
+    background: var(--secondary);
+    color: white;
 }

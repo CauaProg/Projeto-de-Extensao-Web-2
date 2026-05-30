@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════
-   GAIARB – voluntario.css (Professional Redesign)
+   GAIARB – voluntario.css (Organic NGO Redesign)
    ═══════════════════════════════════════════════ */
 
 /* ── BANNER ─────────────────────────────────────── */
@@ -7,25 +7,26 @@
     padding: 80px 0;
     background: var(--bg);
     text-align: center;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    border-bottom: 1px solid var(--border);
 }
 
 .banner p {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 38px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text);
     margin: 0;
 }
 
 .banner p span {
-    color: var(--primary);
+    color: var(--secondary);
 }
 
 /* ── VOLUNTÁRIO EDITORIAL SECTION ────────────────── */
 .voluntario-editorial-section {
-    padding: 100px 0;
+    padding: 80px 0;
     background: var(--white);
+    border-bottom: 1px solid var(--border);
 }
 
 .voluntario-grid {
@@ -42,10 +43,9 @@
 }
 
 .vol-tagline {
-    font-family: 'Outfit', sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.15em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     color: var(--secondary);
     text-transform: uppercase;
     display: block;
@@ -53,17 +53,16 @@
 }
 
 .vol-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 42px;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 24px;
-    letter-spacing: -1px;
     line-height: 1.1;
 }
 
 .vol-lead {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 500;
     color: var(--text);
     line-height: 1.7;
@@ -94,21 +93,21 @@
 }
 
 .vol-frente-num {
-    font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    font-weight: 900;
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--primary);
-    background: rgba(79, 70, 229, 0.05);
+    background: var(--primary-light);
     width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(79, 70, 229, 0.1);
+    border: 1px solid var(--border);
 }
 
 .vol-frente-desc h4 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 17px;
     font-weight: 700;
     color: var(--text);
@@ -127,13 +126,12 @@
     background: var(--white);
     border: 1px solid var(--border);
     padding: 40px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.01);
 }
 
 .vol-form-col .form-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 8px;
 }
@@ -168,11 +166,11 @@
 .field-sharp, .select-sharp, .textarea-sharp {
     border: 1px solid var(--border);
     padding: 14px 18px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     outline: none;
     transition: all 0.2s ease;
-    background: #f8fafc;
+    background: #fdfdfb;
     color: var(--text);
 }
 
@@ -188,15 +186,15 @@
 
 /* ── POR QUE SER VOLUNTÁRIO (EDITORIAL) ─────────── */
 .porque-section-editorial {
-    padding: 100px 0;
-    background: #f8fafc;
-    border-top: 1px solid var(--border);
+    padding: 80px 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
 }
 
 .porque-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 38px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 56px;
     text-align: center;
@@ -213,24 +211,25 @@
     padding-left: 24px;
     display: flex;
     flex-direction: column;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.2s ease;
 }
 
 .porque-col-editorial:hover {
-    border-left-color: var(--primary);
+    border-left-color: var(--secondary);
 }
 
 .porque-num {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 36px;
-    font-weight: 900;
-    color: rgba(79, 70, 229, 0.15);
+    font-weight: 700;
+    color: var(--secondary);
+    opacity: 0.3;
     line-height: 1;
     margin-bottom: 16px;
 }
 
 .porque-col-editorial h4 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 18px;
     font-weight: 700;
     color: var(--text);

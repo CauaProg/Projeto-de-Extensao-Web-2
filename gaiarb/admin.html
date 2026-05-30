@@ -13,7 +13,7 @@
 <!-- LOGIN OVERLAY -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
-        <span class="login-logo-icon">💜</span>
+        <img src="imagens/simbolo_infinito.png" alt="GAIARB" style="height: 48px; width: auto; margin-bottom: 20px; display: inline-block;">
         <h2>Acesso Administrativo</h2>
         <p>Insira suas credenciais para gerenciar o GAIARB</p>
         
@@ -37,30 +37,22 @@
     <!-- SIDEBAR -->
     <aside class="admin-sidebar">
         <div class="sidebar-header">
-            <svg width="36" height="36" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="gSidebar" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#e53e3e"/>
-                        <stop offset="100%" stop-color="#4f46e5"/>
-                    </linearGradient>
-                </defs>
-                <path d="M25,30 C25,18 10,10 10,30 C10,50 25,42 25,30 C25,18 40,10 50,30 C60,50 75,42 75,30 C75,18 90,10 90,30 C90,50 75,42 75,30 C75,18 60,10 50,30 C40,50 25,42 25,30Z" fill="none" stroke="url(#gSidebar)" stroke-width="8" stroke-linecap="round"/>
-            </svg>
-            <span style="background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">GAIARB Admin</span>
+            <img src="imagens/simbolo_infinito.png" alt="GAIARB Logo" style="height: 32px; width: auto; object-fit: contain;">
+            <span style="font-family:'Lora',serif;font-weight:700;font-size:18px;color:var(--text-main);">GAIARB Admin</span>
         </div>
         
         <nav class="sidebar-menu">
             <button class="menu-btn ativo" onclick="switchSection('dashboard')">
-                <span class="menu-icon">📊</span> Painel Geral
+                Painel Geral
             </button>
             <button class="menu-btn" onclick="switchSection('voluntarios')">
-                <span class="menu-icon">🤝</span> Voluntários
+                Voluntários
             </button>
             <button class="menu-btn" onclick="switchSection('doacoes')">
-                <span class="menu-icon">💰</span> Doações Recentes
+                Doações Recentes
             </button>
             <button class="menu-btn logout" onclick="realizarLogout()">
-                <span class="menu-icon">🚪</span> Sair
+                Sair
             </button>
         </nav>
         
@@ -92,28 +84,24 @@
                         <h3>Total Voluntários</h3>
                         <span class="metric-number" id="stat-total-vol">0</span>
                     </div>
-                    <span class="metric-icon">🤝</span>
                 </div>
                 <div class="metric-card card-green">
                     <div class="metric-info">
                         <h3>Arrecadado (PIX)</h3>
                         <span class="metric-number" id="stat-total-doacoes">R$ 0,00</span>
                     </div>
-                    <span class="metric-icon">💰</span>
                 </div>
                 <div class="metric-card card-orange">
                     <div class="metric-info">
                         <h3>Qtd. de Doações</h3>
                         <span class="metric-number" id="stat-qtd-doacoes">0</span>
                     </div>
-                    <span class="metric-icon">📈</span>
                 </div>
                 <div class="metric-card card-pink">
                     <div class="metric-info">
                         <h3>Área em Destaque</h3>
                         <span class="metric-number" id="stat-top-area" style="font-size: 20px;">Nenhuma</span>
                     </div>
-                    <span class="metric-icon">💜</span>
                 </div>
             </div>
 
@@ -168,6 +156,11 @@
                             <option value="Apoio Administrativo">Apoio Administrativo</option>
                             <option value="Outra área">Outra área</option>
                         </select>
+                        <select id="selectFiltroStatus" onchange="filtrarVoluntarios()">
+                            <option value="">Todos os Status</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Aprovado">Aprovados</option>
+                        </select>
                     </div>
                 </div>
                 
@@ -181,6 +174,8 @@
                                 <th>Área</th>
                                 <th>Disponibilidade</th>
                                 <th>Mensagem</th>
+                                <th>Status</th>
+                                <th>Ações</th>
                                 <th>Data Cadastro</th>
                             </tr>
                         </thead>
@@ -430,6 +425,21 @@
         if (data && data.length > 0) {
             data.forEach(v => {
                 const date = new Date(v.data_cadastro).toLocaleString("pt-BR");
+                const statusClass = (v.status || 'Pendente') === 'Pendente' ? 'status-pendente' : 'status-sucesso';
+                const statusText = v.status || 'Pendente';
+                
+                let botoesAcao = '';
+                if (statusText === 'Pendente') {
+                    botoesAcao = `
+                        <button class="btn-acao btn-aprovar" onclick="aprovarVoluntario(${v.id})">Aprovar</button>
+                        <button class="btn-acao btn-recusar" onclick="recusarVoluntario(${v.id})">Recusar</button>
+                    `;
+                } else {
+                    botoesAcao = `
+                        <button class="btn-acao btn-recusar" onclick="recusarVoluntario(${v.id})">Recusar</button>
+                    `;
+                }
+
                 tbl.innerHTML += `
                     <tr>
                         <td><strong>${v.nome}</strong></td>
@@ -438,27 +448,86 @@
                         <td><span class="cargo-tag">${v.area}</span></td>
                         <td>⏰ ${v.disponibilidade}</td>
                         <td><div class="msg-box" title="${v.mensagem || ''}">${v.mensagem || '<i>Sem mensagem</i>'}</div></td>
+                        <td><span class="badge-status ${statusClass}">${statusText}</span></td>
+                        <td><div style="display: flex; gap: 4px;">${botoesAcao}</div></td>
                         <td>${date}</td>
                     </tr>
                 `;
             });
         } else {
-            tbl.innerHTML = '<tr><td colspan="7" class="text-center">Nenhum voluntário atende aos filtros aplicados.</td></tr>';
+            tbl.innerHTML = '<tr><td colspan="9" class="text-center">Nenhum voluntário atende aos filtros aplicados.</td></tr>';
         }
     }
 
     function filtrarVoluntarios() {
         const busca = document.getElementById('inputBuscaVol').value.toLowerCase().trim();
         const areaFiltro = document.getElementById('selectFiltroArea').value;
+        const statusFiltro = document.getElementById('selectFiltroStatus').value;
         
         const filtrados = cachedVolunteers.filter(v => {
             const matchesSearch = v.nome.toLowerCase().includes(busca) || v.email.toLowerCase().includes(busca);
             const matchesArea = areaFiltro === '' || v.area === areaFiltro;
-            return matchesSearch && matchesArea;
+            const matchesStatus = statusFiltro === '' || (v.status || 'Pendente') === statusFiltro;
+            return matchesSearch && matchesArea && matchesStatus;
         });
         
         renderVolunteers(filtrados);
     }
+
+    function aprovarVoluntario(id) {
+        if (!confirm('Deseja realmente aprovar este voluntário?')) return;
+        fetch(API_URL + '/api/admin/voluntarios/aprovar', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Falha na resposta do servidor');
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                carregarDados();
+            } else {
+                alert('Erro ao aprovar voluntário: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao aprovar:', err);
+            alert('Erro de rede ou permissão ao aprovar voluntário.');
+        });
+    }
+
+    function recusarVoluntario(id) {
+        if (!confirm('Deseja realmente recusar e excluir este registro? Esta ação não pode ser desfeita.')) return;
+        fetch(API_URL + '/api/admin/voluntarios/recusar', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ id })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Falha na resposta do servidor');
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                carregarDados();
+            } else {
+                alert('Erro ao recusar voluntário: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao recusar:', err);
+            alert('Erro de rede ou permissão ao recusar voluntário.');
+        });
+    }
 </script>
+<script src="script.js" defer></script>
 </body>
 </html>

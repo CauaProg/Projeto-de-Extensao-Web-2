@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════
-   GAIARB – doe.css (Professional Redesign)
+   GAIARB – doe.css (Organic NGO Redesign)
    ═══════════════════════════════════════════════ */
 
 /* ── HERO SECTION ───────────────────────────────── */
 .doe-hero {
     padding: 80px 0;
     background: var(--bg);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    border-bottom: 1px solid var(--border);
 }
 
 .doe-hero .container {
@@ -17,25 +17,26 @@
 }
 
 .doe-hero-texto {
-    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .doe-hero-texto h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 52px;
-    font-weight: 800;
-    line-height: 1.15;
+    font-family: 'Lora', serif;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
     color: var(--text);
     margin-bottom: 20px;
-    letter-spacing: -1px;
 }
 
 .doe-hero-texto h1 span {
-    color: var(--primary);
+    color: var(--secondary);
 }
 
 .doe-hero-texto p {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--text-light);
     line-height: 1.65;
     margin-bottom: 32px;
@@ -49,40 +50,38 @@
 
 .doe-hero-badges .badge {
     background: var(--white);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    border-radius: 50px;
+    border: 1px solid var(--border);
     padding: 8px 16px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-light);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
 }
 
 .doe-hero-visual {
     display: flex;
     justify-content: center;
-    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 .doe-card-hero {
     background: var(--white);
-    border-radius: 24px;
     padding: 40px;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
     border: 1px solid var(--border);
     text-align: center;
     max-width: 340px;
 }
 
-.doe-card-hero .emoji-grande {
-    font-size: 56px;
-    display: block;
-    margin-bottom: 20px;
-    animation: float 4s ease-in-out infinite;
+.doe-card-hero .icon-container {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
 }
 
 .doe-card-hero h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 20px;
     font-weight: 700;
     color: var(--text);
@@ -100,7 +99,6 @@
 .doe-dashboard-section {
     padding: 80px 0;
     background: var(--white);
-    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
 }
 
@@ -115,14 +113,12 @@
     background: var(--white);
     border: 1px solid var(--border);
     padding: 40px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.01);
 }
 
 .doe-tagline {
-    font-family: 'Outfit', sans-serif;
     font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.15em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     color: var(--secondary);
     text-transform: uppercase;
     display: block;
@@ -130,12 +126,11 @@
 }
 
 .doe-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 32px;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 16px;
-    letter-spacing: -0.5px;
 }
 
 .doe-desc {
@@ -153,7 +148,7 @@
 }
 
 .doe-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text);
     text-transform: uppercase;
@@ -163,11 +158,11 @@
 .doe-field-input {
     border: 1px solid var(--border);
     padding: 14px 18px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    background: #f8fafc;
+    transition: all 0.2s ease;
+    background: #fdfdfb;
 }
 
 .doe-field-input:focus {
@@ -185,10 +180,10 @@
 
 .doe-tab-btn {
     flex: 1;
-    background: #f8fafc;
+    background: #f8f7f3;
     border: none;
     padding: 14px;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -199,13 +194,12 @@
 
 .doe-tab-btn:hover {
     color: var(--text);
-    background: #f1f5f9;
+    background: #f1ede5;
 }
 
 .doe-tab-btn.active {
     background: var(--white);
     color: var(--primary);
-    font-weight: 800;
 }
 
 .doe-tab-content {
@@ -224,7 +218,7 @@
 }
 
 .pix-qr-container {
-    background: #f8fafc;
+    background: #fbfaf6;
     border: 1px solid var(--border);
     padding: 24px;
     display: flex;
@@ -271,9 +265,9 @@
     align-items: center;
     border: 1px solid var(--border);
     padding: 12px 16px;
-    background: #f8fafc;
+    background: #fdfcf9;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: var(--text);
@@ -281,13 +275,13 @@
 }
 
 .pix-chave-box:hover {
-    border-color: var(--primary);
+    border-color: var(--secondary);
 }
 
 .copiar-badge {
     font-size: 11px;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--secondary);
     text-transform: uppercase;
 }
 
@@ -306,9 +300,9 @@
 }
 
 .panel-subtitle {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 24px;
 }
@@ -338,16 +332,16 @@
 
 /* ── OUTRAS FORMAS ────────────────────────────── */
 .formas-section {
-    padding: 100px 0;
+    padding: 80px 0;
     background: var(--bg);
-    border-top: 1px solid rgba(226, 232, 240, 0.5);
+    border-bottom: 1px solid var(--border);
     text-align: center;
 }
 
 .formas-section h2 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 38px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 56px;
 }
@@ -363,22 +357,16 @@
     border: 1px solid var(--border);
     padding: 40px 30px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.forma-card:hover {
-    transform: translateY(-8px);
 }
 
 .forma-card h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 22px;
     font-weight: 700;
-    color: var(--text);
+    color: var(--primary);
     margin-bottom: 12px;
 }
 
@@ -390,34 +378,33 @@
 }
 
 .info-chave {
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
     font-weight: 700;
-    color: var(--primary);
-    background: rgba(79, 70, 229, 0.06);
+    color: var(--secondary);
+    background: var(--primary-light);
     padding: 10px 20px;
     cursor: pointer;
-    border: 1px dashed rgba(79, 70, 229, 0.25);
+    border: 1px dashed var(--secondary);
     transition: all 0.2s ease;
 }
 
 .info-chave:hover {
-    background: rgba(79, 70, 229, 0.1);
-    transform: scale(1.02);
+    background: #fdf5f2;
 }
 
 /* ── IMPACTO ──────────────────────────────────── */
 .impacto-section {
-    padding: 100px 0;
+    padding: 80px 0;
     background: var(--white);
     text-align: center;
-    border-top: 1px solid rgba(226, 232, 240, 0.5);
+    border-bottom: 1px solid var(--border);
 }
 
 .impacto-section h2 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 38px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text);
     margin-bottom: 12px;
 }
@@ -435,21 +422,19 @@
 }
 
 .impacto-item {
-    background: rgba(248, 250, 252, 0.7);
+    background: var(--bg);
     border: 1px solid var(--border);
     padding: 30px 20px;
-    transition: background 0.3s ease;
 }
 
 .impacto-item:hover {
-    background: rgba(79, 70, 229, 0.03);
-    border-color: rgba(79, 70, 229, 0.15);
+    background: var(--primary-light);
 }
 
 .impacto-valor {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 26px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     margin-bottom: 12px;
 }
@@ -492,7 +477,6 @@
         max-width: 450px;
         margin: 0 auto;
         width: 100%;
-        box-sizing: border-box;
     }
     
     .impacto-grid {

@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS voluntarios (
     area VARCHAR(100) NOT NULL,
     disponibilidade VARCHAR(100) NOT NULL,
     mensagem TEXT,
+    status VARCHAR(20) DEFAULT 'Pendente',
     data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

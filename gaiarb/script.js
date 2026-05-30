@@ -33,6 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Carregamento dinâmico do Banco de Dados
     carregarEquipeDinamica();
+
+    // Inicialização da página de doações
+    inicializarPaginaDoacao();
+
+    // Injetar estética global de pintura e desenho
+    injectGlobalAesthetics();
 });
 
 
@@ -217,31 +223,201 @@ function iniciarFadeInSections() {
 
 
 /* ═══════════════════════════════════════════════
-   DOAÇÃO – SELEÇÃO DE VALOR E ABAS
+   DOAÇÃO – SISTEMA SIMPLIFICADO PIX
    ═══════════════════════════════════════════════ */
 let activeDoeTab = 'pix';
 
 function switchDoeTab(tab) {
-    activeDoeTab = tab;
-    // Update button classes
-    document.querySelectorAll(".doe-tab-btn").forEach(btn => {
-        btn.classList.remove("active");
-    });
-    const targetBtn = document.getElementById("tab-btn-" + tab);
-    if (targetBtn) targetBtn.classList.add("active");
-
-    // Update content visibility
-    document.querySelectorAll(".doe-tab-content").forEach(content => {
-        content.classList.remove("active");
-    });
-    const targetContent = document.getElementById("doeTab" + tab.charAt(0).toUpperCase() + tab.slice(1));
-    if (targetContent) targetContent.classList.add("active");
+    // compatibility placeholder
 }
 
+function inicializarPaginaDoacao() {
+    const qrEl = document.getElementById("staticPixQrCode");
+    if (!qrEl) return;
+    
+    // Generate static payload with no amount to let the donor choose
+    const pixPayload = generatePixPayload("67c3117b-28f1-4ac2-94a6-c4bc3121807f", 0, "GAIARB", "RIO DE JANEIRO");
+    currentPixPayload = pixPayload;
+    
+    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=188x188&data=" + encodeURIComponent(pixPayload);
+    qrEl.innerHTML = `<img src="${qrUrl}" alt="QR Code PIX" style="width:188px;height:188px;display:block;margin:0 auto;box-shadow:0 4px 12px rgba(0,0,0,0.05);">`;
+    
+    const ccText = document.getElementById("pixCopiaColaText");
+    if (ccText) ccText.textContent = pixPayload;
+}
 
-/* ═══════════════════════════════════════════════
-   PIX QR CODE GENERATION ENGINE
-   ═══════════════════════════════════════════════ */
+function gerarDoacaoMercadoPago() {
+    const valorInput = document.getElementById("doeValorInput");
+    if (!valorInput) return;
+    
+    const val = parseFloat(valorInput.value);
+    if (!val || val <= 0) {
+        valorInput.style.borderColor = "#e53e3e";
+        setTimeout(() => { valorInput.style.borderColor = ""; }, 1500);
+        alert("Por favor, insira um valor válido.");
+        return;
+    }
+    
+    const btn = document.getElementById("btnGerarPix");
+    const originalText = btn ? btn.textContent : "Gerar QR Code PIX";
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Gerando...";
+    }
+    
+    const successMsg = document.getElementById("doe-success-msg");
+    if (successMsg) {
+        successMsg.style.display = "none";
+    }
+    
+    fetch(apiBase + '/api/doacoes/mercadopago', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ valor: val })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Erro na requisição ao servidor");
+        return res.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Update current payload
+            currentPixPayload = data.qr_code;
+            
+            // Update Copia e Cola text
+            const ccText = document.getElementById("pixCopiaColaText");
+            if (ccText) {
+                ccText.textContent = data.qr_code;
+            }
+            
+            // Update QR Code image
+            const qrEl = document.getElementById("staticPixQrCode");
+            if (qrEl) {
+                if (data.qr_code_base64) {
+                    qrEl.innerHTML = `<img src="data:image/png;base64,${data.qr_code_base64}" alt="QR Code PIX" style="width:188px;height:188px;display:block;margin:0 auto;box-shadow:0 4px 12px rgba(0,0,0,0.05);">`;
+                } else {
+                    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=188x188&data=" + encodeURIComponent(data.qr_code);
+                    qrEl.innerHTML = `<img src="${qrUrl}" alt="QR Code PIX" style="width:188px;height:188px;display:block;margin:0 auto;box-shadow:0 4px 12px rgba(0,0,0,0.05);">`;
+                }
+            }
+            
+            // Update status badge
+            const badge = document.getElementById("mp-status-badge");
+            if (badge) {
+                badge.textContent = data.provider === "mercadopago" ? "Mercado Pago Ativo" : "Mercado Pago (Simulado)";
+                badge.style.display = "inline-block";
+            }
+            
+            if (successMsg) {
+                successMsg.textContent = `QR Code PIX no valor de R$ ${val.toFixed(2)} gerado com sucesso!`;
+                successMsg.style.display = "block";
+            }
+        } else {
+            alert("Erro ao gerar doação: " + (data.error || "Tente novamente mais tarde."));
+        }
+    })
+    .catch(err => {
+        console.warn("Backend offline or request failed, generating local simulation.", err);
+        // Fallback to local simulation
+        const simulatedPayload = generatePixPayload("67c3117b-28f1-4ac2-94a6-c4bc3121807f", val, "GAIARB", "RIO DE JANEIRO");
+        currentPixPayload = simulatedPayload;
+        
+        const ccText = document.getElementById("pixCopiaColaText");
+        if (ccText) {
+            ccText.textContent = simulatedPayload;
+        }
+        
+        const qrEl = document.getElementById("staticPixQrCode");
+        if (qrEl) {
+            const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=188x188&data=" + encodeURIComponent(simulatedPayload);
+            qrEl.innerHTML = `<img src="${qrUrl}" alt="QR Code PIX" style="width:188px;height:188px;display:block;margin:0 auto;box-shadow:0 4px 12px rgba(0,0,0,0.05);">`;
+        }
+        
+        const badge = document.getElementById("mp-status-badge");
+        if (badge) {
+            badge.textContent = "Mercado Pago (Simulado Offline)";
+            badge.style.display = "inline-block";
+        }
+        
+        if (successMsg) {
+            successMsg.textContent = `Doação de R$ ${val.toFixed(2)} simulada offline com sucesso!`;
+            successMsg.style.display = "block";
+        }
+    })
+    .finally(() => {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+}
+
+function registrarDoacaoNoBanco() {
+    const valorInput = document.getElementById("doeValorInput");
+    if (!valorInput) return;
+    
+    const val = parseFloat(valorInput.value);
+    if (!val || val <= 0) {
+        valorInput.style.borderColor = "#e53e3e";
+        setTimeout(() => { valorInput.style.borderColor = ""; }, 1500);
+        alert("Por favor, insira um valor válido.");
+        return;
+    }
+    
+    const successMsg = document.getElementById("doe-success-msg");
+    if (successMsg) {
+        successMsg.style.display = "none";
+    }
+    
+    fetch(apiBase + '/api/doacoes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ valor: val, tipo: 'PIX', status: 'Confirmado' })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (successMsg) {
+            successMsg.textContent = `Doação de R$ ${val.toFixed(2)} registrada com sucesso! Muito obrigado pelo seu apoio.`;
+            successMsg.style.display = "block";
+        } else {
+            alert(`Doação de R$ ${val.toFixed(2)} registrada com sucesso!`);
+        }
+        valorInput.value = "50";
+        const nameInput = document.getElementById("doeNomeInput");
+        if (nameInput) nameInput.value = "";
+    })
+    .catch(err => {
+        console.warn("Backend offline, simulating local log.");
+        if (successMsg) {
+            successMsg.textContent = `Doação de R$ ${val.toFixed(2)} registrada com sucesso (Modo offline). Obrigado!`;
+            successMsg.style.display = "block";
+        } else {
+            alert(`Doação de R$ ${val.toFixed(2)} registrada com sucesso (Modo offline).`);
+        }
+        valorInput.value = "50";
+        const nameInput = document.getElementById("doeNomeInput");
+        if (nameInput) nameInput.value = "";
+    });
+}
+
+function copiarChave(chave) {
+    navigator.clipboard.writeText(chave).then(() => {
+        alert("Chave copiada: " + chave);
+    }).catch(() => {
+        alert("Chave PIX: " + chave);
+    });
+}
+
+function copiarChaveCopiaCola() {
+    if (currentPixPayload) {
+        navigator.clipboard.writeText(currentPixPayload).then(() => {
+            alert("Código PIX Copia e Cola copiado com sucesso!");
+        }).catch(() => {
+            alert("Falha ao copiar código PIX.");
+        });
+    }
+}
+
 function calculateCRC16(str) {
     let crc = 0xFFFF;
     for (let c = 0; c < str.length; c++) {
@@ -279,12 +455,13 @@ function generatePixPayload(key, amount, name, city) {
     payload += "52040000";
     payload += "5303986";
     
-    let numAmount = Number(amount);
-    if (isNaN(numAmount)) numAmount = 0;
-    let amtStr = numAmount.toFixed(2);
-    let amtLenStr = String(amtStr.length);
-    if (amtLenStr.length < 2) amtLenStr = "0" + amtLenStr;
-    payload += "54" + amtLenStr + amtStr;
+    if (amount && Number(amount) > 0) {
+        let numAmount = Number(amount);
+        let amtStr = numAmount.toFixed(2);
+        let amtLenStr = String(amtStr.length);
+        if (amtLenStr.length < 2) amtLenStr = "0" + amtLenStr;
+        payload += "54" + amtLenStr + amtStr;
+    }
     
     payload += "5802BR";
     
@@ -298,7 +475,7 @@ function generatePixPayload(key, amount, name, city) {
     if (cityLenStr.length < 2) cityLenStr = "0" + cityLenStr;
     payload += "60" + cityLenStr + sanitizedCity;
     
-    let txid = "62070503***";
+    let txid = "62100506GAIARB";
     payload += txid;
     
     payload += "6304";
@@ -306,139 +483,6 @@ function generatePixPayload(key, amount, name, city) {
     payload += crc;
     
     return payload;
-}
-
-/* ═══════════════════════════════════════════════
-   PROCESSAMENTO DE DOAÇÃO DIRETA
-   ═══════════════════════════════════════════════ */
-function processarDoacaoDireta() {
-    const valorInput = document.getElementById("doeValorInput");
-    if (!valorInput) return;
-    const val = parseFloat(valorInput.value);
-    if (!val || val <= 0) {
-        valorInput.style.borderColor = "#e53e3e";
-        setTimeout(() => { valorInput.style.borderColor = ""; }, 1500);
-        alert("Por favor, insira um valor válido de doação.");
-        return;
-    }
-
-    if (activeDoeTab === 'pix') {
-        const qrEl = document.getElementById("pixQrCodeImage");
-        const keyText = document.getElementById("pixChaveText");
-        const copiaColaLabel = document.getElementById("pixCopiaColaLabel");
-        const copiaColaBox = document.getElementById("pixCopiaColaBox");
-        const copiaColaText = document.getElementById("pixCopiaColaText");
-        if (!qrEl) return;
-
-        qrEl.innerHTML = "<span class='pix-placeholder-text'>Gerando QR Code...</span>";
-
-        // Conteúdo oficial do PIX gerado dinamicamente para o e-mail contato@gaiarb.org
-        const pixPayload = generatePixPayload("contato@gaiarb.org", val, "GAIARB", "RIO DE JANEIRO");
-        currentPixPayload = pixPayload;
-
-        // Gera QR Code usando a API pública
-        const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=188x188&data=" + encodeURIComponent(pixPayload);
-        qrEl.innerHTML = `<img src="${qrUrl}" alt="QR Code PIX" style="width:188px;height:188px;display:block;margin:0 auto;box-shadow:0 4px 12px rgba(0,0,0,0.05);">`;
-
-        // Exibe chave copia e cola
-        if (copiaColaLabel) copiaColaLabel.style.display = "block";
-        if (copiaColaBox) copiaColaBox.style.display = "flex";
-        if (copiaColaText) copiaColaText.textContent = pixPayload;
-
-        // Registra a doação no banco de dados via API do backend
-        fetch(apiBase + '/api/doacoes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ valor: val, tipo: 'PIX', status: 'Pendente' })
-        })
-        .then(res => res.json())
-        .then(data => console.log("PIX donation logged successfully:", data))
-        .catch(err => console.log("Bypass donation logging (API offline)"));
-
-    } else if (activeDoeTab === 'cartao') {
-        const cardNum = document.getElementById("cardNum")?.value.trim();
-        const cardValid = document.getElementById("cardValid")?.value.trim();
-        const cardCvv = document.getElementById("cardCvv")?.value.trim();
-        const cardName = document.getElementById("cardName")?.value.trim();
-
-        if (!cardNum || !cardValid || !cardCvv || !cardName) {
-            alert("Por favor, preencha todos os dados do cartão de crédito.");
-            return;
-        }
-
-        // Registra a doação de Cartão no banco de dados
-        fetch(apiBase + '/api/doacoes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ valor: val, tipo: 'Cartão de Crédito', status: 'Confirmado' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(`Doação de R$ ${val.toFixed(2)} via Cartão de Crédito realizada com sucesso!`);
-            // Limpa formulário
-            if (document.getElementById("cardNum")) document.getElementById("cardNum").value = "";
-            if (document.getElementById("cardValid")) document.getElementById("cardValid").value = "";
-            if (document.getElementById("cardCvv")) document.getElementById("cardCvv").value = "";
-            if (document.getElementById("cardName")) document.getElementById("cardName").value = "";
-        })
-        .catch(err => {
-            console.log("Bypass donation logging (API offline)");
-            alert(`Doação de R$ ${val.toFixed(2)} simulada com sucesso (servidor offline).`);
-        });
-
-    } else if (activeDoeTab === 'boleto') {
-        const boletoLinkWrap = document.getElementById("boletoLinkWrap");
-        const boletoCodigoText = document.getElementById("boletoCodigoText");
-        
-        // Gera código de barras fictício
-        const numBoleto = "34191.79001 " + Math.floor(10000 + Math.random() * 90000) + "." + Math.floor(100000 + Math.random() * 900000) + " " + Math.floor(10000 + Math.random() * 90000) + "." + Math.floor(100000 + Math.random() * 900000) + " " + Math.floor(1 + Math.random() * 9) + " " + Math.floor(10000000000000 + Math.random() * 90000000000000);
-        if (boletoCodigoText) boletoCodigoText.textContent = numBoleto;
-        if (boletoLinkWrap) boletoLinkWrap.style.display = "block";
-
-        // Registra a doação de Boleto no banco de dados
-        fetch(apiBase + '/api/doacoes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ valor: val, tipo: 'Boleto Bancário', status: 'Pendente' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(`Boleto de R$ ${val.toFixed(2)} gerado com sucesso!`);
-        })
-        .catch(err => {
-            console.log("Bypass donation logging (API offline)");
-            alert(`Boleto de R$ ${val.toFixed(2)} gerado com sucesso (servidor offline).`);
-        });
-    }
-}
-
-function copiarChave(chave) {
-    navigator.clipboard.writeText(chave).then(() => {
-        alert("Chave copiada: " + chave);
-    }).catch(() => {
-        alert("Chave PIX: " + chave);
-    });
-}
-
-function copiarChaveCopiaCola() {
-    if (currentPixPayload) {
-        navigator.clipboard.writeText(currentPixPayload).then(() => {
-            alert("Código PIX Copia e Cola copiado com sucesso!");
-        }).catch(() => {
-            alert("Falha ao copiar código PIX.");
-        });
-    }
-}
-
-function copiarBoletoCodigo() {
-    const text = document.getElementById("boletoCodigoText")?.textContent;
-    if (text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Código de barras do boleto copiado!");
-        }).catch(() => {
-            alert("Falha ao copiar código de barras.");
-        });
-    }
 }
 
 
@@ -646,3 +690,226 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+/* Auxiliar para gerar o SVG do Girassol Geométrico detalhado */
+function getSunflowerSVG() {
+    const numPetals = 14;
+    const angleStep = 360 / numPetals;
+    let sfSvg = `
+        <svg viewBox="0 0 120 120" fill="none" stroke="currentColor">
+            <!-- Grid de Sementes no Miolo (Centro) -->
+            <g stroke-width="0.8" opacity="0.8">
+                <circle cx="60" cy="60" r="18" fill="currentColor" fill-opacity="0.15" stroke-width="1.8"/>
+                <circle cx="60" cy="60" r="14" stroke-dasharray="2,2"/>
+                <circle cx="60" cy="60" r="10" stroke-dasharray="1.5,1.5"/>
+                <circle cx="60" cy="60" r="6" stroke-dasharray="1,1"/>
+                <circle cx="60" cy="60" r="2.5" fill="currentColor"/>
+                <path d="M52,52 L68,68 M68,52 L52,68 M60,42 L60,78 M42,60 L78,60" stroke-width="0.5" stroke-dasharray="1,2" opacity="0.5"/>
+            </g>
+            <g>
+    `;
+    // 1. Pétalas de Trás
+    for (let i = 0; i < numPetals; i++) {
+        const rotAngle = i * angleStep + (angleStep / 2);
+        sfSvg += `
+            <g transform="rotate(${rotAngle} 60 60)" opacity="0.65">
+                <path d="M 60,42 C 53,34 53,22 60,12 Z" fill="currentColor" fill-opacity="0.5" stroke="currentColor" stroke-width="0.8"/>
+                <path d="M 60,42 C 67,34 67,22 60,12 Z" fill="currentColor" fill-opacity="0.35" stroke="currentColor" stroke-width="0.8"/>
+            </g>
+        `;
+    }
+    // 2. Pétalas da Frente
+    for (let i = 0; i < numPetals; i++) {
+        const rotAngle = i * angleStep;
+        sfSvg += `
+            <g transform="rotate(${rotAngle} 60 60)">
+                <path d="M 60,42 C 52,32 52,20 60,10 Z" fill="currentColor" fill-opacity="0.85" stroke="currentColor" stroke-width="1"/>
+                <path d="M 60,42 C 68,32 68,20 60,10 Z" fill="currentColor" fill-opacity="0.6" stroke="currentColor" stroke-width="1"/>
+            </g>
+        `;
+    }
+    sfSvg += `
+            </g>
+        </svg>
+    `;
+    return sfSvg;
+}
+
+/* ═══════════════════════════════════════════════
+   ESTÉTICA GLOBAL: INJEÇÃO DE ARTE, TINTA E DESENHO
+   ═══════════════════════════════════════════════ */
+function injectGlobalAesthetics() {
+    // 1. SVGs dos respingos de tinta
+    const splattersSvg = [
+        `<svg viewBox="0 0 100 100"><path d="M30,30 C50,10 80,20 80,45 C80,70 60,85 40,85 C20,85 10,60 10,45 C10,30 10,50 30,30 Z" fill="currentColor"/><circle cx="85" cy="30" r="3.5" fill="currentColor"/><circle cx="15" cy="75" r="2.5" fill="currentColor"/><circle cx="50" cy="5" r="2" fill="currentColor"/></svg>`,
+        `<svg viewBox="0 0 100 100"><path d="M40,25 C65,15 85,40 75,70 C65,100 35,90 25,75 C15,60 15,35 40,25 Z" fill="currentColor"/><circle cx="80" cy="85" r="2.5" fill="currentColor"/><circle cx="20" cy="15" r="3.5" fill="currentColor"/><circle cx="55" cy="8" r="2" fill="currentColor"/></svg>`,
+        `<svg viewBox="0 0 100 100"><path d="M35,20 C60,10 80,30 80,55 C80,80 50,90 35,75 C20,60 10,30 35,20 Z" fill="currentColor"/><circle cx="85" cy="65" r="2.5" fill="currentColor"/><circle cx="15" cy="20" r="2" fill="currentColor"/><circle cx="70" cy="85" r="1.5" fill="currentColor"/></svg>`
+    ];
+
+    // 2. Injetar respingos estruturados nos fundos das seções
+    const sections = document.querySelectorAll(".secao, .hero-section, .about-brief-section, .how-to-help-section, .testimonials-section, .faq-section, .about-section, .team-section, .voluntario-editorial-section, .login-wrapper, .video-section");
+    sections.forEach((sec, idx) => {
+        // Garantir que a seção tenha position relative para posicionar os splatters
+        const secStyle = window.getComputedStyle(sec);
+        if (secStyle.position === 'static') {
+            sec.style.position = 'relative';
+        }
+
+        // Criar splatter 1 (esquerda)
+        const s1 = document.createElement("div");
+        const shapeIdx1 = idx % 3;
+        s1.className = `paint-splatter-bg splatter-${shapeIdx1 + 1}`;
+        s1.innerHTML = splattersSvg[shapeIdx1];
+        
+        // Cores alternadas da paleta
+        const colors = ["var(--primary)", "var(--secondary)", "var(--accent)"];
+        s1.style.color = colors[idx % colors.length];
+        
+        // Posicionamento alternado
+        s1.style.left = `${5 + (idx * 7) % 15}%`;
+        s1.style.top = `${10 + (idx * 13) % 40}%`;
+        s1.style.transform = `rotate(${(idx * 45) % 360}deg) scale(${0.8 + (idx * 0.1) % 0.5})`;
+        sec.appendChild(s1);
+
+        // Criar splatter 2 (direita) em seções maiores
+        if (sec.offsetHeight > 300) {
+            const s2 = document.createElement("div");
+            const shapeIdx2 = (idx + 1) % 3;
+            s2.className = `paint-splatter-bg splatter-${shapeIdx2 + 1}`;
+            s2.innerHTML = splattersSvg[shapeIdx2];
+            s2.style.color = colors[(idx + 1) % colors.length];
+            s2.style.right = `${5 + (idx * 9) % 15}%`;
+            s2.style.bottom = `${10 + (idx * 17) % 35}%`;
+            s2.style.transform = `rotate(${(idx * 75) % 360}deg) scale(${0.7 + (idx * 0.15) % 0.4})`;
+            sec.appendChild(s2);
+        }
+
+        // Injetar DOIS girassóis decorativos de fundo por seção (diagonais opostas)
+        const sunflower1 = document.createElement("div");
+        const sfColor1 = idx % 2 === 0 ? 'sunflower-gray' : 'sunflower-green';
+        const sfSize1 = idx % 3 === 0 ? 'sunflower-size-1' : 'sunflower-size-2';
+        sunflower1.className = `sunflower-bg ${sfColor1} ${sfSize1}`;
+        sunflower1.innerHTML = getSunflowerSVG();
+        
+        const sunflower2 = document.createElement("div");
+        const sfColor2 = idx % 2 === 0 ? 'sunflower-green' : 'sunflower-gray';
+        const sfSize2 = idx % 3 === 0 ? 'sunflower-size-2' : 'sunflower-size-1';
+        sunflower2.className = `sunflower-bg ${sfColor2} ${sfSize2}`;
+        sunflower2.innerHTML = getSunflowerSVG();
+
+        // Posicionar alternando entre diagonais opostas
+        if (idx % 2 === 0) {
+            sunflower1.style.right = `${8 + (idx * 7) % 18}%`;
+            sunflower1.style.top = `${8 + (idx * 13) % 25}%`;
+            
+            sunflower2.style.left = `${10 + (idx * 9) % 18}%`;
+            sunflower2.style.bottom = `${12 + (idx * 11) % 25}%`;
+        } else {
+            sunflower1.style.left = `${8 + (idx * 8) % 18}%`;
+            sunflower1.style.top = `${12 + (idx * 12) % 25}%`;
+            
+            sunflower2.style.right = `${10 + (idx * 11) % 18}%`;
+            sunflower2.style.bottom = `${8 + (idx * 14) % 25}%`;
+        }
+        
+        sunflower1.style.transform = `rotate(${(idx * 40 + 15) % 360}deg)`;
+        sunflower2.style.transform = `rotate(${(idx * 40 + 195) % 360}deg)`;
+        
+        sec.appendChild(sunflower1);
+        sec.appendChild(sunflower2);
+    });
+
+    // 3. Efeito de Quadro (Molduras) e Rotação Randômica Realista
+    const frames = document.querySelectorAll('.secao-img, .grid-img-large, .grid-img-small, .about-img, .about-image-wrapper .about-img, .about-img');
+    frames.forEach((el, index) => {
+        // Rotação entre -1.2deg e +1.2deg para simular quadros reais pendurados
+        const angle = (Math.random() * 2.4 - 1.2).toFixed(2);
+        el.style.transform = `rotate(${angle}deg)`;
+        
+        el.addEventListener('mouseenter', () => {
+            el.style.transform = 'scale(1.015) rotate(0deg)';
+        });
+        el.addEventListener('mouseleave', () => {
+            el.style.transform = `rotate(${angle}deg)`;
+        });
+    });
+
+    // 4. Inserir desenhos (sketches) decorativos à mão livre
+    
+    // Setas apontando para ações importantes
+    const buttonsToArrow = document.querySelectorAll(".hero-actions .btn-primary, .vol-form-col .btn-primary, .newsletter-form .btn-primary, .btn-doe");
+    buttonsToArrow.forEach((btn, idx) => {
+        // Evita duplicar setas no header
+        if (btn.classList.contains("btn-doe") && idx > 0) return;
+        
+        const parent = btn.parentNode;
+        const parentStyle = window.getComputedStyle(parent);
+        if (parentStyle.position === 'static') {
+            parent.style.position = 'relative';
+        }
+
+        const arrow = document.createElement("div");
+        arrow.className = "sketch-element sketch-arrow";
+        // SVG seta rabiscada
+        arrow.innerHTML = `
+            <svg viewBox="0 0 50 30">
+                <path d="M5,20 Q20,5 42,10 M42,10 L32,3 M42,10 L34,19" stroke="currentColor" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `;
+        arrow.style.color = "var(--secondary)";
+        
+        // Posicionar ligeiramente acima e à esquerda do botão
+        arrow.style.position = "absolute";
+        arrow.style.top = "-24px";
+        arrow.style.left = "-38px";
+        arrow.style.transform = "rotate(-10deg)";
+        
+        parent.appendChild(arrow);
+    });
+
+    // Estrelas brilhantes ao lado de cabeçalhos ou destaques
+    const titles = document.querySelectorAll(".section-title, .help-title, .vol-title, .member-name, .form-title");
+    titles.forEach((title, idx) => {
+        const titleStyle = window.getComputedStyle(title);
+        if (titleStyle.position === 'static') {
+            title.style.position = 'relative';
+        }
+
+        const star = document.createElement("div");
+        star.className = "sketch-element sketch-star";
+        // SVG estrela rabiscada
+        star.innerHTML = `
+            <svg viewBox="0 0 24 24">
+                <path d="M12,2 L14.5,9 L22,9 L16,13.5 L18.5,21 L12,16.5 L5.5,21 L8,13.5 L2,9 L9.5,9 Z" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `;
+        star.style.color = "var(--accent)";
+        star.style.top = "-12px";
+        star.style.right = "-20px";
+        
+        title.appendChild(star);
+    });
+
+    // Espirais rabiscadas nos cantos dos cards maiores
+    const largeCards = document.querySelectorAll(".team-card, .vol-form-col, .login-card, .registro-doacao-box");
+    largeCards.forEach((card, idx) => {
+        const cardStyle = window.getComputedStyle(card);
+        if (cardStyle.position === 'static') {
+            card.style.position = 'relative';
+        }
+
+        const swirl = document.createElement("div");
+        swirl.className = "sketch-element sketch-swirl";
+        // SVG espiral
+        swirl.innerHTML = `
+            <svg viewBox="0 0 40 40">
+                <path d="M20,20 C25,15 25,25 20,25 C15,25 15,15 20,10 C27,10 27,27 20,30 C10,30 8,12 20,5 C35,0 38,32 20,37" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        `;
+        swirl.style.color = "var(--primary)";
+        swirl.style.bottom = "8px";
+        swirl.style.right = "8px";
+        
+        card.appendChild(swirl);
+    });
+}
